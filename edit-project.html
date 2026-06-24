@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>案件編集 | FreelaBoard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Noto Sans JP", Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      width: 220px;
+      height: 100vh;
+      padding: 24px 16px;
+      background: #0f2a4a;
+      color: #ffffff;
+    }
+
+    .logo {
+      margin: 0 0 28px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #dbeafe;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: #163b68;
+      color: #ffffff;
+    }
+
+    .nav-icon {
+      display: grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      font-size: 15px;
+    }
+
+    .nav-icon-image {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+
+    .logout {
+      color: #dbeafe;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sidebar-account {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sidebar-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .main {
+      width: 100%;
+      margin-left: 220px;
+      padding: 40px;
+    }
+
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      margin-bottom: 18px;
+      color: #2563eb;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .form-card {
+      padding: 32px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
+    }
+
+    .page-title {
+      margin: 0 0 28px;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #374151;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      color: #111827;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .status-preview {
+      display: inline-flex;
+      margin-top: 4px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 78px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-consulting {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    .status-progress {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    .status-delivered {
+      background: #ede9fe;
+      color: #7c3aed;
+    }
+
+    .status-waiting {
+      background: #ffedd5;
+      color: #f97316;
+    }
+
+    .status-done {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .status-default {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+
+    .items-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .tags-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .tag-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid #dbeafe;
+      border-radius: 999px;
+      background: #f8fafc;
+      color: #1f2937;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tag-option input {
+      width: auto;
+      accent-color: #2563eb;
+    }
+
+    .tag-empty {
+      margin: 0;
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .items-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .items-help {
+      margin: 0 0 14px;
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .items-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item-row {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) 150px 180px 90px;
+      gap: 12px;
+      align-items: end;
+      padding: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #f9fafb;
+      cursor: grab;
+    }
+
+    .drag-handle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 20px;
+      margin-bottom: 10px;
+      color: #9ca3af;
+      font-size: 14px;
+      cursor: inherit;
+      user-select: none;
+    }
+
+    .ghost-button,
+    .danger-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 14px;
+      border: none;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .ghost-button {
+      background: #eef2ff;
+      color: #1d4ed8;
+    }
+
+    .danger-button {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .item-row.dragging {
+      opacity: 0.55;
+      border-color: #93c5fd;
+      background: #eff6ff;
+    }
+
+    .item-row input,
+    .item-row select,
+    .item-row button,
+    .item-row label,
+    .item-row textarea {
+      cursor: auto;
+    }
+
+    .total-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding: 18px 20px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #123a74;
+    }
+
+    .total-label {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .total-value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary-button {
+      background: #123a74;
+      color: #ffffff;
+    }
+
+    .secondary-button {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .message {
+      padding: 36px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .loading {
+      padding: 14px 0 4px;
+      color: #6b7280;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      .layout {
+        display: block;
+      }
+
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 18px 16px;
+      }
+
+      .logo {
+        margin-bottom: 16px;
+      }
+
+      .nav {
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+      }
+
+      .nav-link {
+        justify-content: center;
+        padding: 10px;
+      }
+
+      .nav-icon,
+      .logout {
+        display: none;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 24px 16px;
+      }
+
+      .form-card {
+        padding: 24px;
+      }
+
+      .form-grid,
+      .item-row {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        align-items: stretch;
+        flex-direction: column-reverse;
+      }
+
+      .items-header {
+        align-items: stretch;
+        flex-direction: column;
+      }
+    }
+
+    /* Responsive layout */
+    .mobile-header,
+    .sidebar-overlay,
+    .sidebar-close {
+      display: none;
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .sidebar {
+        width: 190px !important;
+        padding: 22px 12px !important;
+      }
+
+      .main {
+        margin-left: 190px !important;
+        padding: 28px 22px !important;
+      }
+
+      .content {
+        max-width: 100% !important;
+      }
+
+      .summary-grid,
+      .stats-grid,
+      .cards-grid,
+      .report-grid,
+      .settings-grid,
+      .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+
+      .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+
+      .table-wrap,
+      .invoice-scroll,
+      .calendar-scroll {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        min-width: 820px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      body {
+        min-width: 0;
+      }
+
+      .mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 80;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 58px;
+        padding: 0 16px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #ffffff;
+        box-shadow: 0 8px 18px rgba(17, 24, 39, 0.08);
+      }
+
+      .mobile-logo {
+        color: #0f2a4a;
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      .hamburger-button,
+      .sidebar-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border: 0;
+        border-radius: 8px;
+        background: #eff6ff;
+        color: #0f2a4a;
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .sidebar-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+      }
+
+      .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 90;
+        display: block;
+        visibility: hidden;
+        background: rgba(15, 23, 42, 0.46);
+        opacity: 0;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+      }
+
+      body.sidebar-open .sidebar-overlay {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .layout {
+        display: block !important;
+        min-height: auto !important;
+      }
+
+      .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: 100 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        width: min(82vw, 300px) !important;
+        height: 100vh !important;
+        padding: 24px 16px !important;
+        transform: translateX(-105%);
+        transition: transform 0.24s ease;
+        overflow-y: auto;
+      }
+
+      body.sidebar-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .sidebar .logo {
+        margin-right: 44px;
+      }
+
+      .nav {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+        overflow: visible !important;
+      }
+
+      .nav-link {
+        justify-content: flex-start !important;
+        min-width: 0 !important;
+        min-height: 44px;
+        padding: 12px 14px !important;
+      }
+
+      .nav-icon {
+        display: grid !important;
+      }
+
+      .sidebar-account {
+        margin-top: auto !important;
+      }
+
+      .logout {
+        display: inline-flex !important;
+        min-height: 44px;
+        align-items: center;
+      }
+
+      .main {
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 22px 16px 32px !important;
+      }
+
+      .content {
+        max-width: 100% !important;
+      }
+
+      .page-header,
+      .calendar-controls,
+      .toolbar,
+      .filter-bar,
+      .actions,
+      .detail-actions,
+      .invoice-actions {
+        align-items: stretch !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+      }
+
+      .page-title {
+        font-size: 24px !important;
+      }
+
+      .page-lead {
+        font-size: 14px !important;
+      }
+
+      .summary-grid,
+      .stats-grid,
+      .cards-grid,
+      .report-grid,
+      .settings-grid,
+      .dashboard-grid,
+      .form-grid,
+      .filters,
+      .toolbar,
+      .workspace,
+      .invoice-grid,
+      .invoice-header,
+      .invoice-footer {
+        grid-template-columns: 1fr !important;
+      }
+
+      .summary-card,
+      .table-card,
+      .form-card,
+      .detail-card,
+      .profile-card,
+      .settings-card,
+      .toolbar-card,
+      .calendar-card,
+      .week-card,
+      .detail-panel,
+      .auth-card {
+        border-radius: 8px !important;
+      }
+
+      input,
+      select,
+      textarea,
+      .button,
+      .new-button,
+      .primary-button,
+      .secondary-button,
+      .ghost-button,
+      .danger-button,
+      .filter-button,
+      .clear-button,
+      .detail-button,
+      .preview-button {
+        width: 100%;
+        min-height: 44px;
+      }
+
+      .table-wrap,
+      .invoice-scroll,
+      .calendar-scroll {
+        width: 100%;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        min-width: 760px;
+      }
+
+      th,
+      td {
+        white-space: nowrap;
+      }
+
+      .item-row,
+      .items-row {
+        grid-template-columns: 1fr !important;
+      }
+
+      .drag-handle {
+        width: 100% !important;
+        min-height: 34px;
+      }
+
+      .calendar-grid {
+        min-width: 680px !important;
+      }
+
+      .day-cell {
+        min-height: 104px !important;
+        padding: 8px !important;
+      }
+
+      .event-title {
+        max-width: 100%;
+      }
+
+      .week-row {
+        min-width: 720px;
+      }
+
+      .invoice-card,
+      .invoice-paper {
+        min-width: 720px;
+      }
+
+      @media print {
+        .mobile-header,
+        .sidebar-overlay,
+        .sidebar-close {
+          display: none !important;
+        }
+      }
+    }
+
+    /* Responsive print and scroll safeguards */
+    @media print {
+      .mobile-header,
+      .sidebar-overlay,
+      .sidebar-close {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .week-card,
+      .invoice-card,
+      .invoice-paper {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
+    /* Tablet keeps desktop-style sidebar */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .layout {
+        display: flex !important;
+        min-height: 100vh !important;
+      }
+
+      .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 100vh !important;
+      }
+
+      .nav {
+        grid-template-columns: 1fr !important;
+        overflow: visible !important;
+      }
+
+      .nav-link {
+        justify-content: flex-start !important;
+        min-width: 0 !important;
+      }
+
+      .nav-icon {
+        display: grid !important;
+      }
+
+      .logout {
+        display: inline-flex !important;
+      }
+    }
+
+    /* Compact tablet and mobile density */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      body {
+        font-size: 13px;
+      }
+
+      .main {
+        padding: 22px 18px !important;
+      }
+
+      .page-header {
+        margin-bottom: 18px !important;
+      }
+
+      .page-title {
+        font-size: 23px !important;
+      }
+
+      .page-lead {
+        font-size: 12px !important;
+        line-height: 1.55 !important;
+      }
+
+      .summary-grid,
+      .stats-grid,
+      .cards-grid,
+      .report-grid,
+      .settings-grid,
+      .dashboard-grid {
+        gap: 12px !important;
+      }
+
+      .summary-card,
+      .table-card,
+      .form-card,
+      .detail-card,
+      .profile-card,
+      .settings-card,
+      .toolbar-card,
+      .calendar-card,
+      .week-card,
+      .detail-panel,
+      .auth-card {
+        padding: 16px !important;
+      }
+
+      .summary-label,
+      .card-note,
+      .summary-note,
+      .detail-label,
+      th {
+        font-size: 11px !important;
+      }
+
+      .summary-value {
+        font-size: 20px !important;
+      }
+
+      th,
+      td {
+        padding: 11px 12px !important;
+        font-size: 12px !important;
+      }
+
+      input,
+      select,
+      textarea,
+      .button,
+      .new-button,
+      .primary-button,
+      .secondary-button,
+      .ghost-button,
+      .danger-button,
+      .filter-button,
+      .clear-button,
+      .detail-button,
+      .preview-button {
+        min-height: 38px !important;
+        font-size: 12px !important;
+      }
+
+      .filter-bar,
+      .toolbar,
+      .card-header {
+        padding: 14px 16px !important;
+      }
+
+      .nav-link {
+        padding: 10px 12px !important;
+        font-size: 12px !important;
+      }
+    }
+
+    @media (max-width: 767px) {
+      body {
+        font-size: 12px;
+      }
+
+      .mobile-header {
+        height: 50px !important;
+        padding: 0 12px !important;
+      }
+
+      .mobile-logo {
+        font-size: 15px !important;
+      }
+
+      .hamburger-button,
+      .sidebar-close {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 19px !important;
+      }
+
+      .sidebar {
+        width: min(78vw, 260px) !important;
+        padding: 18px 12px !important;
+      }
+
+      .logo {
+        font-size: 18px !important;
+        margin-bottom: 18px !important;
+      }
+
+      .nav-link {
+        min-height: 39px !important;
+        padding: 9px 11px !important;
+        font-size: 12px !important;
+        gap: 8px !important;
+      }
+
+      .nav-icon {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 13px !important;
+      }
+
+      .sidebar-account {
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+      }
+
+      .sidebar-avatar {
+        width: 28px !important;
+        height: 28px !important;
+      }
+
+      .main {
+        padding: 16px 12px 24px !important;
+      }
+
+      .page-header {
+        margin-bottom: 16px !important;
+      }
+
+      .page-title {
+        font-size: 21px !important;
+      }
+
+      .page-lead {
+        font-size: 12px !important;
+        line-height: 1.5 !important;
+      }
+
+      .summary-grid,
+      .stats-grid,
+      .cards-grid,
+      .report-grid,
+      .settings-grid,
+      .dashboard-grid,
+      .form-grid,
+      .filters {
+        gap: 10px !important;
+      }
+
+      .summary-card,
+      .table-card,
+      .form-card,
+      .detail-card,
+      .profile-card,
+      .settings-card,
+      .toolbar-card,
+      .calendar-card,
+      .week-card,
+      .detail-panel,
+      .auth-card {
+        padding: 13px !important;
+      }
+
+      .summary-label,
+      .summary-note,
+      .card-note,
+      .detail-label,
+      .help-text,
+      th {
+        font-size: 10.5px !important;
+      }
+
+      .summary-value {
+        font-size: 18px !important;
+      }
+
+      .card-title,
+      .form-title,
+      .section-title {
+        font-size: 14px !important;
+      }
+
+      th,
+      td {
+        padding: 9px 10px !important;
+        font-size: 11.5px !important;
+      }
+
+      input,
+      select,
+      textarea,
+      .button,
+      .new-button,
+      .primary-button,
+      .secondary-button,
+      .ghost-button,
+      .danger-button,
+      .filter-button,
+      .clear-button,
+      .detail-button,
+      .preview-button {
+        min-height: 38px !important;
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+      }
+
+      .filter-bar,
+      .toolbar,
+      .card-header,
+      .calendar-controls {
+        padding: 12px !important;
+        gap: 9px !important;
+      }
+
+      .status,
+      .status-badge,
+      .tag-badge {
+        padding: 4px 8px !important;
+        font-size: 10.5px !important;
+      }
+
+      .day-cell {
+        min-height: 86px !important;
+        padding: 6px !important;
+      }
+
+      .event-card {
+        padding: 6px !important;
+      }
+
+      .event-title,
+      .event-id,
+      .event-days {
+        font-size: 10px !important;
+      }
+
+      .auth-card {
+        width: min(420px, 100%) !important;
+      }
+    }
+
+    /* Center mobile header logo */
+    @media (max-width: 1023px) {
+      .mobile-header {
+        position: sticky;
+        justify-content: center !important;
+      }
+
+      .hamburger-button {
+        position: absolute;
+        left: 12px;
+      }
+
+      .mobile-logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        white-space: nowrap;
+      }
+    }
+
+    /* Polished hamburger menu */
+    @media (max-width: 1023px) {
+      .hamburger-button {
+        display: inline-flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        border: 1px solid #dbeafe !important;
+        background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%) !important;
+        color: #0f2a4a !important;
+        box-shadow: 0 8px 18px rgba(15, 42, 74, 0.14);
+      }
+
+      .hamburger-button span {
+        display: block;
+        width: 17px;
+        height: 2px;
+        border-radius: 999px;
+        background: #0f2a4a;
+        transition: transform 0.2s ease, opacity 0.2s ease, width 0.2s ease;
+      }
+
+      .hamburger-button span:nth-child(2) {
+        width: 13px;
+      }
+
+      .hamburger-button:hover span:nth-child(2) {
+        width: 17px;
+      }
+
+      body.sidebar-open .hamburger-button span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+      }
+
+      body.sidebar-open .hamburger-button span:nth-child(2) {
+        opacity: 0;
+      }
+
+      body.sidebar-open .hamburger-button span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+      }
+    }
+
+    /* Polished opened mobile menu */
+    @media (max-width: 767px) {
+      .sidebar {
+        width: min(84vw, 292px) !important;
+        padding: 20px 14px 18px !important;
+        background: linear-gradient(180deg, #0f2a4a 0%, #123a64 55%, #0b1f38 100%) !important;
+        border-radius: 0 18px 18px 0;
+        box-shadow: 18px 0 42px rgba(15, 23, 42, 0.28);
+      }
+
+      .sidebar .logo {
+        display: flex;
+        align-items: center;
+        min-height: 40px;
+        margin: 0 46px 18px 2px !important;
+        color: #ffffff;
+        font-size: 18px !important;
+        letter-spacing: 0.01em;
+      }
+
+      .sidebar-close {
+        top: 18px !important;
+        right: 14px !important;
+        width: 34px !important;
+        height: 34px !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        border-radius: 999px !important;
+        background: rgba(255, 255, 255, 0.10) !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        font-size: 20px !important;
+        line-height: 1;
+      }
+
+      .sidebar .nav {
+        gap: 6px !important;
+        padding: 8px 0 14px;
+      }
+
+      .sidebar .nav-link {
+        min-height: 42px !important;
+        padding: 10px 12px !important;
+        border: 1px solid transparent;
+        border-radius: 10px !important;
+        color: #dbeafe !important;
+        background: transparent;
+        transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+      }
+
+      .sidebar .nav-link:hover,
+      .sidebar .nav-link.active {
+        background: rgba(255, 255, 255, 0.12) !important;
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #ffffff !important;
+        transform: translateX(2px);
+      }
+
+      .sidebar .nav-icon {
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.10);
+        color: #ffffff;
+        font-size: 13px !important;
+      }
+
+      .sidebar .nav-link.active .nav-icon {
+        background: #ffffff;
+        color: #123a64;
+      }
+
+      .sidebar-account {
+        margin-top: auto !important;
+        margin-bottom: 10px !important;
+        padding: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 12px !important;
+        background: rgba(255, 255, 255, 0.10) !important;
+        backdrop-filter: blur(8px);
+      }
+
+      .logout {
+        justify-content: center;
+        min-height: 40px !important;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #dbeafe !important;
+        font-size: 12px !important;
+        font-weight: 700;
+      }
+
+      .sidebar-overlay {
+        background: rgba(2, 6, 23, 0.54) !important;
+        backdrop-filter: blur(2px);
+      }
+    }
+
+    /* Cleaner selected state in mobile menu */
+    @media (max-width: 767px) {
+      .sidebar .nav-link {
+        position: relative;
+        border-color: transparent !important;
+        box-shadow: none !important;
+      }
+
+      .sidebar .nav-link.active {
+        background: rgba(255, 255, 255, 0.13) !important;
+        border-color: transparent !important;
+        box-shadow: inset 3px 0 0 #93c5fd !important;
+      }
+
+      .sidebar .nav-link:hover {
+        border-color: transparent !important;
+        box-shadow: none !important;
+      }
+
+      .sidebar .nav-link.active:hover {
+        box-shadow: inset 3px 0 0 #93c5fd !important;
+      }
+
+      .sidebar .nav-link.active .nav-icon {
+        background: rgba(147, 197, 253, 0.22) !important;
+        color: #ffffff !important;
+      }
+    }
+
+    /* Plain mobile menu icons */
+    @media (max-width: 767px) {
+      .sidebar .nav-icon,
+      .sidebar .nav-link.active .nav-icon {
+        background: transparent !important;
+        border-radius: 0 !important;
+        color: currentColor !important;
+      }
+    }
+
+    /* Motion effects */
+    @keyframes fbFadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fbPopIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.88);
+      }
+      70% {
+        transform: scale(1.06);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fbPulseSoft {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: none;
+      }
+      50% {
+        transform: scale(1.03);
+        box-shadow: 0 8px 18px rgba(245, 158, 11, 0.18);
+      }
+    }
+
+    .summary-card,
+    .chart-card,
+    .recent-card,
+    .table-card,
+    .form-card,
+    .detail-card,
+    .profile-card,
+    .settings-card,
+    .toolbar-card,
+    .calendar-card,
+    .week-card,
+    .detail-panel,
+    .auth-card {
+      animation: fbFadeUp 0.85s ease both;
+    }
+
+    .summary-card:nth-child(2),
+    .chart-card:nth-child(2),
+    .form-card + .table-card {
+      animation-delay: 0.06s;
+    }
+
+    .summary-card:nth-child(3) {
+      animation-delay: 0.12s;
+    }
+
+    .summary-card:nth-child(4) {
+      animation-delay: 0.18s;
+    }
+
+    .summary-card:nth-child(5) {
+      animation-delay: 0.24s;
+    }
+
+    .summary-card:nth-child(6) {
+      animation-delay: 0.30s;
+    }
+
+    .summary-card:nth-child(7) {
+      animation-delay: 0.36s;
+    }
+
+    tbody tr,
+    .alert-item,
+    .week-row,
+    .event-card {
+      animation: fbFadeUp 0.65s ease both;
+    }
+
+    tbody tr:hover,
+    .alert-item:hover,
+    .event-card:hover,
+    .summary-card:hover,
+    .chart-card:hover,
+    .recent-card:hover {
+      transform: translateY(-2px);
+      transition: transform 0.32s ease, box-shadow 0.32s ease, background 0.32s ease;
+    }
+
+    .status,
+    .status-badge,
+    .tag-badge {
+      transition: transform 0.32s ease, box-shadow 0.32s ease, filter 0.32s ease;
+    }
+
+    .status:hover,
+    .status-badge:hover,
+    .tag-badge:hover {
+      transform: translateY(-1px) scale(1.02);
+      filter: saturate(1.08);
+    }
+
+    .status-waiting,
+    .status-overdue,
+    .event-card.status-overdue,
+    .event-card.status-payment {
+      animation: fbPulseSoft 4.2s ease-in-out infinite;
+    }
+
+    @media (max-width: 767px) {
+      body.sidebar-open .sidebar .nav-link {
+        animation: fbFadeUp 0.55s ease both;
+      }
+
+      body.sidebar-open .sidebar .nav-link:nth-child(1) { animation-delay: 0.03s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(2) { animation-delay: 0.06s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(3) { animation-delay: 0.09s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(4) { animation-delay: 0.12s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(5) { animation-delay: 0.15s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(6) { animation-delay: 0.18s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(7) { animation-delay: 0.21s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(8) { animation-delay: 0.24s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(9) { animation-delay: 0.27s; }
+      body.sidebar-open .sidebar .nav-link:nth-child(10) { animation-delay: 0.30s; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+  </style>
+  <link rel="stylesheet" href="./assets/common.css">
+</head>
+<body>
+  <header class="mobile-header">
+    <button class="hamburger-button" type="button" aria-label="メニューを開く" aria-controls="appSidebar" aria-expanded="false"><span></span><span></span><span></span></button>
+    <span class="mobile-logo">FreelaBoard</span>
+  </header>
+  <div class="sidebar-overlay" data-sidebar-overlay></div>
+  <div class="layout">
+    <aside class="sidebar" id="appSidebar">
+      
+      <button class="sidebar-close" type="button" aria-label="メニューを閉じる">×</button>
+      <h1 class="logo">FreelaBoard</h1>
+
+      <nav class="nav" aria-label="メインメニュー">
+        <a class="nav-link" href="./dashboard.html">
+          <span class="nav-icon">⌂</span>
+          <span>ダッシュボード</span>
+        </a>
+        <a class="nav-link active" href="./projects.html">
+          <span class="nav-icon">☷</span>
+          <span>案件一覧</span>
+        </a>
+        <a class="nav-link" href="./add-project.html">
+          <span class="nav-icon">＋</span>
+          <span>案件追加</span>
+        </a>
+        <a class="nav-link" href="./invoices.html">
+          <span class="nav-icon">▤</span>
+          <span>請求書一覧</span>
+        </a>
+        <a class="nav-link" href="./reports.html">
+          <span class="nav-icon">↗</span>
+          <span>レポート</span>
+        </a>
+        <a class="nav-link" href="./clients.html">
+          <span class="nav-icon">◇</span>
+          <span>クライアント管理</span>
+        </a>
+        <a class="nav-link" href="./tags.html">
+          <span class="nav-icon">#</span>
+          <span>タグ管理</span>
+        </a>
+        <a class="nav-link" href="./calendar.html">
+          <span class="nav-icon">□</span>
+          <span>カレンダー</span>
+        </a>
+        <a class="nav-link" href="./profile.html">
+          <span class="nav-icon"><img class="nav-icon-image" src="./assets/profile-nav-icon.png" alt=""></span>
+          <span>プロフィール</span>
+        </a>
+        <a class="nav-link" href="./settings.html">
+          <span class="nav-icon">⚙</span>
+          <span>設定</span>
+        </a>
+      </nav>
+      <div class="sidebar-account">
+        <img class="sidebar-avatar" src="./assets/iconfree.jpg" alt="プロフィール画像">
+        <span id="topAccountName">user</span>
+      </div>
+      <a class="logout" href="./login.html">ログアウト</a>
+    </aside>
+
+    <main class="main">
+      <div class="content">
+        <a class="back-link" id="backLink" href="./projects.html">← 一覧に戻る</a>
+
+        <section class="form-card" id="formCard">
+          <h2 class="page-title">案件編集</h2>
+
+          <form id="projectForm">
+            <div class="loading" id="loading">Loading...</div>
+            <div class="form-grid">
+              <div class="form-field full">
+                <label for="title">案件名</label>
+                <input id="title" name="title" type="text" required>
+              </div>
+
+              <div class="form-field">
+                <label for="client">クライアント</label>
+                <input id="client" name="client" type="text" required>
+              </div>
+
+              <div class="form-field">
+                <label for="status">ステータス</label>
+                <select id="status" name="status" required>
+                  <option value="相談中">相談中</option>
+                  <option value="進行中">進行中</option>
+                  <option value="納品済み">納品済み</option>
+                  <option value="入金待ち">入金待ち</option>
+                  <option value="完了">完了</option>
+                </select>
+                <span class="status-preview">
+                  <span class="status" id="statusBadgePreview">相談中</span>
+                </span>
+              </div>
+
+              <div class="form-field">
+                <label for="displayId">案件ID</label>
+                <input id="displayId" name="displayId" type="text" readonly>
+              </div>
+
+              <div class="form-field">
+                <label for="deadline">締切日</label>
+                <input id="deadline" name="deadline" type="date">
+              </div>
+
+              <div class="form-field">
+                <label for="paidAt">入金日</label>
+                <input id="paidAt" name="paidAt" type="date">
+              </div>
+
+              <div class="form-field full">
+                <label for="memo">メモ</label>
+                <textarea id="memo" name="memo"></textarea>
+              </div>
+            </div>
+
+            <section class="tags-section">
+              <div class="items-header">
+                <h3 class="section-title">タグ</h3>
+                <a class="ghost-button" href="./tags.html">新しいタグを追加</a>
+              </div>
+              <p class="items-help">内部管理用のタグです。請求書には表示されません。</p>
+              <div class="tag-options" id="tagOptions">
+                <p class="tag-empty">タグを読み込み中...</p>
+              </div>
+            </section>
+
+            <section class="items-section">
+              <div class="items-header">
+                <h3 class="section-title">内訳</h3>
+                <button class="ghost-button" id="addItemButton" type="button">内訳を追加</button>
+              </div>
+              <p class="items-help">古いデータで金額だけ保存されている場合も、1行の内訳として読み込みます。</p>
+              <div class="items-list" id="itemsList"></div>
+              <div class="total-box">
+                <span class="total-label">合計金額</span>
+                <span class="total-value" id="totalPriceText">¥0</span>
+              </div>
+            </section>
+
+            <div class="actions">
+              <a class="button secondary-button" id="cancelButton" href="./projects.html">キャンセル</a>
+              <button class="button primary-button" id="saveButton" type="submit">保存する</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <template id="itemRowTemplate">
+    <div class="item-row">
+      <div class="drag-handle" title="ドラッグして並び替え">⋮⋮</div>
+      <div class="form-field">
+        <label>品目名</label>
+        <input class="item-name" type="text" placeholder="例：デザイン" required>
+      </div>
+      <div class="form-field">
+        <label>区分</label>
+        <select class="item-type">
+          <option value="main">メイン</option>
+          <option value="option">オプション</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>金額</label>
+        <input class="item-price" type="number" min="0" step="1" placeholder="50000" required>
+      </div>
+      <button class="danger-button remove-item-button" type="button">削除</button>
+    </div>
+  </template>
+
+  <script type="module">
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, deleteField, doc, getDoc, getDocs, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { auth, db } from "./firebase.js";
+
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get("id");
+    const formCard = document.getElementById("formCard");
+    const projectForm = document.getElementById("projectForm");
+    const itemsList = document.getElementById("itemsList");
+    const itemRowTemplate = document.getElementById("itemRowTemplate");
+    const addItemButton = document.getElementById("addItemButton");
+    const totalPriceText = document.getElementById("totalPriceText");
+    const saveButton = document.getElementById("saveButton");
+    const loading = document.getElementById("loading");
+    const backLink = document.getElementById("backLink");
+    const cancelButton = document.getElementById("cancelButton");
+    const tagOptions = document.getElementById("tagOptions");
+
+    const titleInput = document.getElementById("title");
+    const clientInput = document.getElementById("client");
+    const displayIdInput = document.getElementById("displayId");
+    const statusInput = document.getElementById("status");
+    const statusBadgePreview = document.getElementById("statusBadgePreview");
+    const deadlineInput = document.getElementById("deadline");
+    const paidAtInput = document.getElementById("paidAt");
+    const memoInput = document.getElementById("memo");
+    let currentUser = null;
+    let draggedRow = null;
+    let currentProjectTags = [];
+    let originalStatus = "";
+    let paidAtWasAuto = false;
+
+    function getProjectDocRef() {
+      return doc(db, "users", currentUser.uid, "projects", projectId);
+    }
+
+    function pickValue(project, keys, defaultValue = "") {
+      for (const key of keys) {
+        if (project[key] !== undefined && project[key] !== null && project[key] !== "") {
+          return project[key];
+        }
+      }
+
+      return defaultValue;
+    }
+
+    function formatDateInput(value) {
+      if (!value) {
+        return "";
+      }
+
+      const date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return String(value);
+      }
+
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+    function formatAmount(amount) {
+      return "¥" + Number(amount || 0).toLocaleString("ja-JP");
+    }
+
+    function getTodayText() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const day = String(today.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function addOneMonth(dateText) {
+      if (!dateText) {
+        return null;
+      }
+
+      const [year, month, day] = dateText.split("-").map(Number);
+      if (!year || !month || !day) {
+        return null;
+      }
+
+      const date = new Date(year, month - 1, day);
+      date.setMonth(date.getMonth() + 1);
+
+      const nextYear = date.getFullYear();
+      const nextMonth = String(date.getMonth() + 1).padStart(2, "0");
+      const nextDay = String(date.getDate()).padStart(2, "0");
+      return `${nextYear}-${nextMonth}-${nextDay}`;
+    }
+
+    function getSavePaidAt() {
+      if (statusInput.value === "完了" && originalStatus !== "完了") {
+        return getTodayText();
+      }
+
+      if (paidAtInput.value) {
+        return paidAtInput.value;
+      }
+
+      if (statusInput.value === "完了") {
+        return getTodayText();
+      }
+
+      return addOneMonth(deadlineInput.value);
+    }
+
+    function getStatusClass(status) {
+      if (status === "相談中") return "status-consulting";
+      if (status === "進行中") return "status-progress";
+      if (status === "納品済み") return "status-delivered";
+      if (status === "入金待ち") return "status-waiting";
+      if (status === "完了") return "status-done";
+      return "status-default";
+    }
+
+    function updateStatusPreview() {
+      const status = statusInput.value || "相談中";
+      statusBadgePreview.className = "status " + getStatusClass(status);
+      statusBadgePreview.textContent = status;
+    }
+
+    function showMessage(message) {
+      formCard.innerHTML = "";
+
+      const messageElement = document.createElement("p");
+      messageElement.className = "message";
+      messageElement.textContent = message;
+      formCard.appendChild(messageElement);
+    }
+
+    function getProjectItems(project) {
+      if (Array.isArray(project.items) && project.items.length > 0) {
+        return project.items.map((item) => {
+          return {
+            name: item.name || "",
+            type: item.type || "main",
+            price: Number(item.price || 0)
+          };
+        });
+      }
+
+      return [{
+        name: pickValue(project, ["title", "name", "projectName"]),
+        type: "main",
+        price: Number(pickValue(project, ["price", "amount", "fee"], 0))
+      }];
+    }
+
+    function collectItems() {
+      return Array.from(itemsList.querySelectorAll(".item-row"))
+        .map((row) => {
+          return {
+            name: row.querySelector(".item-name").value.trim(),
+            type: row.querySelector(".item-type").value || "main",
+            price: Number(row.querySelector(".item-price").value || 0)
+          };
+        })
+        .filter((item) => item.name !== "" || item.price > 0);
+    }
+
+    function collectSelectedTags() {
+      return Array.from(tagOptions.querySelectorAll(".tag-checkbox:checked"))
+        .map((checkbox) => checkbox.value);
+    }
+
+    async function loadTags(selectedTags = []) {
+      const snapshot = await getDocs(collection(db, "users", currentUser.uid, "tags"));
+      tagOptions.innerHTML = "";
+
+      if (snapshot.empty) {
+        tagOptions.innerHTML = '<p class="tag-empty">タグがありません。タグ管理から追加できます。</p>';
+        return;
+      }
+
+      snapshot.docs
+        .map((tagDoc) => tagDoc.data().name)
+        .filter(Boolean)
+        .sort((tagA, tagB) => tagA.localeCompare(tagB, "ja"))
+        .forEach((tagName) => {
+          const label = document.createElement("label");
+          const checkbox = document.createElement("input");
+          const text = document.createElement("span");
+
+          label.className = "tag-option";
+          checkbox.className = "tag-checkbox";
+          checkbox.type = "checkbox";
+          checkbox.value = tagName;
+          checkbox.checked = selectedTags.includes(tagName);
+          text.textContent = tagName;
+
+          label.appendChild(checkbox);
+          label.appendChild(text);
+          tagOptions.appendChild(label);
+        });
+    }
+
+    function updateTotalPrice() {
+      const totalPrice = collectItems().reduce((sum, item) => sum + item.price, 0);
+      totalPriceText.textContent = formatAmount(totalPrice);
+    }
+
+    function getDragAfterElement(container, mouseY) {
+      const rows = [...container.querySelectorAll(".item-row:not(.dragging)")];
+
+      return rows.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = mouseY - box.top - box.height * 0.35;
+
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        }
+
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+
+    function addItemRow(name = "", price = "", type = "main") {
+      const row = itemRowTemplate.content.firstElementChild.cloneNode(true);
+      const nameInput = row.querySelector(".item-name");
+      const typeInput = row.querySelector(".item-type");
+      const priceInput = row.querySelector(".item-price");
+      const removeButton = row.querySelector(".remove-item-button");
+
+      row.draggable = true;
+      nameInput.value = name;
+      typeInput.value = type;
+      priceInput.value = price;
+
+      nameInput.addEventListener("input", updateTotalPrice);
+      typeInput.addEventListener("change", updateTotalPrice);
+      priceInput.addEventListener("input", updateTotalPrice);
+
+      row.addEventListener("dragstart", (event) => {
+        if (event.target.closest("input, select, button, textarea, label")) {
+          event.preventDefault();
+          return;
+        }
+
+        draggedRow = row;
+        row.classList.add("dragging");
+      });
+
+      row.addEventListener("dragend", () => {
+        row.classList.remove("dragging");
+        draggedRow = null;
+      });
+
+      removeButton.addEventListener("click", () => {
+        if (itemsList.children.length === 1) {
+          nameInput.value = "";
+          typeInput.value = "main";
+          priceInput.value = "";
+          updateTotalPrice();
+          return;
+        }
+
+        row.remove();
+        updateTotalPrice();
+      });
+
+      itemsList.appendChild(row);
+      updateTotalPrice();
+    }
+
+    function fillForm(project) {
+      titleInput.value = pickValue(project, ["title", "name", "projectName"]);
+      clientInput.value = pickValue(project, ["client", "clientName"]);
+      displayIdInput.value = pickValue(project, ["displayId"], "未設定");
+      statusInput.value = pickValue(project, ["status"], "相談中");
+      originalStatus = statusInput.value;
+      deadlineInput.value = formatDateInput(pickValue(project, ["deadline", "dueDate", "endDate"], ""));
+      const savedPaidAt = formatDateInput(pickValue(project, ["paidAt"], ""));
+      paidAtWasAuto = !savedPaidAt;
+      paidAtInput.value = savedPaidAt || addOneMonth(deadlineInput.value) || "";
+      memoInput.value = pickValue(project, ["memo", "note", "description"]);
+      currentProjectTags = Array.isArray(project.tags) ? project.tags : [];
+      updateStatusPreview();
+
+      itemsList.innerHTML = "";
+      getProjectItems(project).forEach((item) => {
+        addItemRow(item.name, item.price, item.type);
+      });
+      updateTotalPrice();
+    }
+
+    addItemButton.addEventListener("click", () => {
+      addItemRow();
+    });
+
+    statusInput.addEventListener("change", () => {
+      updateStatusPreview();
+
+      if (statusInput.value === "完了" && originalStatus !== "完了") {
+        paidAtInput.value = getTodayText();
+        paidAtWasAuto = false;
+      }
+    });
+
+    deadlineInput.addEventListener("change", () => {
+      if (paidAtWasAuto) {
+        paidAtInput.value = addOneMonth(deadlineInput.value) || "";
+      }
+    });
+
+    paidAtInput.addEventListener("input", () => {
+      paidAtWasAuto = false;
+    });
+
+    itemsList.addEventListener("dragover", (event) => {
+      event.preventDefault();
+
+      if (!draggedRow) {
+        return;
+      }
+
+      const nextRow = getDragAfterElement(itemsList, event.clientY);
+
+      if (!nextRow) {
+        if (itemsList.lastElementChild !== draggedRow) {
+          itemsList.appendChild(draggedRow);
+        }
+        return;
+      }
+
+      if (nextRow !== draggedRow) {
+        itemsList.insertBefore(draggedRow, nextRow);
+      }
+    });
+
+    async function loadProject() {
+      if (!projectId) {
+        showMessage("案件IDが指定されていません");
+        return;
+      }
+
+      const detailUrl = "./project-detail.html?id=" + encodeURIComponent(projectId);
+      backLink.href = detailUrl;
+      cancelButton.href = detailUrl;
+
+      try {
+        loading.style.display = "block";
+        const projectSnapshot = await getDoc(getProjectDocRef());
+
+        if (!projectSnapshot.exists()) {
+          showMessage("案件が見つかりません");
+          return;
+        }
+
+        fillForm(projectSnapshot.data());
+        await loadTags(currentProjectTags);
+      } catch (error) {
+        console.error("案件の取得に失敗しました:", error);
+        showMessage("案件の取得に失敗しました");
+      } finally {
+        loading.style.display = "none";
+      }
+    }
+
+    projectForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!projectId) {
+        alert("案件IDが指定されていません");
+        return;
+      }
+
+      const items = collectItems();
+
+      if (items.length === 0) {
+        alert("内訳を1件以上入力してください");
+        return;
+      }
+
+      if (items.some((item) => item.name === "" || item.price <= 0)) {
+        alert("内訳の品目名と金額を正しく入力してください");
+        return;
+      }
+
+      const totalPrice = items.reduce((sum, item) => sum + item.price, 0);
+
+      saveButton.disabled = true;
+      saveButton.textContent = "保存中...";
+      loading.style.display = "block";
+
+      try {
+        const projectRef = getProjectDocRef();
+
+        await updateDoc(projectRef, {
+          title: titleInput.value,
+          client: clientInput.value,
+          status: statusInput.value,
+          deadline: deadlineInput.value,
+          paymentMonth: deleteField(),
+          paidAt: getSavePaidAt(),
+          tags: collectSelectedTags(),
+          memo: memoInput.value,
+          items,
+          totalPrice,
+          updatedAt: serverTimestamp()
+        });
+
+        window.location.href = "./project-detail.html?id=" + encodeURIComponent(projectId);
+      } catch (error) {
+        console.error("案件の更新に失敗しました:", error);
+        alert("案件の更新に失敗しました");
+        saveButton.disabled = false;
+        saveButton.textContent = "保存する";
+      } finally {
+        loading.style.display = "none";
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "./login.html";
+        return;
+      }
+
+      currentUser = user;
+      loadProject();
+    });
+  </script>
+  <script type="module" src="./assets/auth-common.js"></script>
+  <script src="./assets/common.js"></script>
+</body>
+</html>

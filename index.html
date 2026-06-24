@@ -1,0 +1,2368 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreelaBoard | フリーランスの仕事、ぜんぶここに。</title>
+  <meta name="description" content="FreelaBoardは、案件・請求書・売上・クライアント管理をひとつにまとめるフリーランス向け案件管理SaaSです。" />
+  <style>
+    :root {
+      --navy: #111827;
+      --text: #334155;
+      --muted: #64748b;
+      --purple: #5b5bdc;
+      --purple-dark: #30309f;
+      --purple-soft: #ececff;
+      --purple-pale: #f4f3ff;
+      --blue: #2458db;
+      --orange: #ffad1f;
+      --red: #e3352f;
+      --line: #dfe3f2;
+      --white: #fff;
+      --max: 1120px;
+      --shadow: 0 18px 40px rgba(48, 48, 159, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--navy);
+      background: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+      line-height: 1.75;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .container {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid #edf0f7;
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner {
+      width: min(1180px, calc(100% - 32px));
+      min-height: 56px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .logo-mark {
+      width: 26px;
+      height: 26px;
+      position: relative;
+      border-radius: 8px;
+      background: var(--purple);
+      box-shadow: 0 10px 20px rgba(91, 91, 220, 0.22);
+    }
+
+    .logo-mark::before,
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      bottom: 6px;
+      width: 4px;
+      border-radius: 99px;
+      background: #fff;
+    }
+
+    .logo-mark::before {
+      left: 7px;
+      height: 8px;
+    }
+
+    .logo-mark::after {
+      left: 15px;
+      height: 15px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .nav a:not(.header-cta):hover {
+      color: var(--purple);
+    }
+
+    .header-cta,
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--orange);
+      color: #fff;
+      font-weight: 900;
+      box-shadow: 0 12px 24px rgba(255, 173, 31, 0.25);
+    }
+
+    .header-cta {
+      min-height: 34px;
+      padding: 0 18px;
+    }
+
+    .btn {
+      min-height: 58px;
+      padding: 0 30px;
+      font-size: 16px;
+    }
+
+    .btn-blue {
+      background: var(--purple);
+      box-shadow: 0 16px 30px rgba(91, 91, 220, 0.24);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: clamp(34px, 4vw, 46px);
+      line-height: 1.16;
+      font-weight: 950;
+    }
+
+    h2 {
+      margin-bottom: 14px;
+      font-size: clamp(28px, 3.2vw, 43px);
+      line-height: 1.35;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      font-size: 21px;
+      line-height: 1.45;
+      font-weight: 900;
+    }
+
+    .accent {
+      color: var(--purple);
+    }
+
+    .keep-line {
+      display: block;
+      white-space: nowrap;
+    }
+
+    .section {
+      padding: 84px 0;
+    }
+
+    .section-purple {
+      background: #e9e8fb;
+    }
+
+    .section-head {
+      max-width: 780px;
+      margin: 0 auto 42px;
+      text-align: center;
+    }
+
+    .section-head p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: var(--purple);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .eyebrow::before,
+    .eyebrow::after {
+      content: "\\";
+      display: inline-block;
+      margin: 0 10px;
+      color: var(--purple);
+    }
+
+    .eyebrow::after {
+      content: "/";
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #696bec 0%, #5355d7 58%, #33389e 100%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      left: -120px;
+      bottom: -180px;
+      width: 520px;
+      height: 520px;
+      border: 54px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      min-height: 430px;
+      display: grid;
+      grid-template-columns: minmax(480px, 0.9fr) minmax(0, 1.1fr);
+      gap: 34px;
+      align-items: center;
+      padding: 54px 0 50px;
+    }
+
+    .hero-copy p {
+      max-width: 470px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 750;
+      line-height: 1.9;
+    }
+
+    .hero-actions {
+      margin-top: 28px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .hero-price {
+      width: 112px;
+      height: 112px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--purple-dark);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.25;
+      box-shadow: 0 18px 34px rgba(22, 24, 80, 0.18);
+    }
+
+    .hero-price strong {
+      display: block;
+      color: var(--red);
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .device-stage {
+      position: relative;
+      min-height: 310px;
+    }
+
+    .pc-frame {
+      overflow: hidden;
+      border: 10px solid #0f172a;
+      border-bottom-width: 18px;
+      border-radius: 12px 12px 6px 6px;
+      background: #fff;
+      box-shadow: 0 28px 55px rgba(8, 12, 40, 0.28);
+    }
+
+    .pc-frame img {
+      width: 100%;
+      aspect-ratio: 1477 / 860;
+      object-fit: cover;
+      object-position: top left;
+    }
+
+    .phone-frame {
+      position: absolute;
+      left: -18px;
+      bottom: -14px;
+      width: 170px;
+      overflow: hidden;
+      border: 8px solid #0f172a;
+      border-radius: 26px;
+      background: #fff;
+      box-shadow: 0 24px 42px rgba(8, 12, 40, 0.24);
+    }
+
+    .phone-frame img {
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      object-fit: cover;
+      object-position: top left;
+    }
+
+    .target-card {
+      margin-top: -1px;
+      padding: 46px 0;
+      background: #f2f1ff;
+    }
+
+    .target-box {
+      width: min(680px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 28px;
+      align-items: center;
+      padding: 26px 34px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .phone-illust {
+      width: 96px;
+      height: 126px;
+      margin: 0 auto;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #fff, #e8ebff);
+      border: 8px solid #25305f;
+      position: relative;
+    }
+
+    .phone-illust::after {
+      content: "";
+      position: absolute;
+      left: 24px;
+      bottom: -26px;
+      width: 58px;
+      height: 42px;
+      border-radius: 50%;
+      background: #ffd3b0;
+      transform: rotate(-18deg);
+    }
+
+    .target-box p {
+      margin: 0;
+      color: var(--navy);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .video-box {
+      width: min(520px, 100%);
+      margin: 0 auto 62px;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #101532;
+      box-shadow: var(--shadow);
+    }
+
+    .video-box img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      opacity: 0.82;
+    }
+
+    .video-play {
+      position: relative;
+    }
+
+    .video-play::after {
+      content: "▶";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 66px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #ff1f1f;
+      color: #fff;
+      font-size: 24px;
+    }
+
+    .funnel {
+      width: min(760px, 100%);
+      margin: 28px auto 0;
+      padding: 24px;
+      border-radius: 16px;
+      background: var(--purple-pale);
+      box-shadow: var(--shadow);
+    }
+
+    .funnel-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      overflow: hidden;
+      border-radius: 999px;
+      background: #fff;
+    }
+
+    .funnel-step {
+      padding: 13px 8px;
+      background: var(--purple);
+      color: #fff;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 850;
+      clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%);
+      margin-left: -13px;
+    }
+
+    .funnel-step:first-child {
+      margin-left: 0;
+      clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%);
+    }
+
+    .metric-grid {
+      width: min(760px, 100%);
+      margin: 48px auto 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .metric {
+      padding: 0 28px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child {
+      border-right: 0;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--purple);
+      font-size: 58px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .metric span {
+      color: var(--navy);
+      font-weight: 900;
+    }
+
+    .metric p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .process-flow {
+      position: relative;
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      padding: 14px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 28px 70px rgba(49, 58, 137, 0.14);
+    }
+
+    .process-flow::before {
+      content: "";
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 86px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(91, 91, 220, 0.34), transparent);
+    }
+
+    .process-step {
+      position: relative;
+      min-height: 300px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(80, 92, 190, 0.1);
+    }
+
+    .process-step:nth-child(even) {
+      margin-top: 34px;
+      background: #f8f8ff;
+    }
+
+    .process-step:nth-child(4) {
+      background: linear-gradient(145deg, #30309f 0%, #5557dd 100%);
+      color: #fff;
+    }
+
+    .process-step::before {
+      content: "";
+      position: absolute;
+      right: -50px;
+      bottom: -58px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(91, 91, 220, 0.1);
+    }
+
+    .process-step:nth-child(4)::before {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .process-num {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--purple);
+      color: #fff;
+      font-weight: 950;
+      box-shadow: 0 14px 28px rgba(69, 85, 206, 0.22);
+    }
+
+    .process-copy {
+      position: relative;
+    }
+
+    .process-copy h3 {
+      color: currentColor;
+      font-size: clamp(20px, 1.55vw, 25px);
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .process-copy p {
+      margin-bottom: 0;
+      color: currentColor;
+      font-size: 14px;
+      font-weight: 760;
+      line-height: 1.8;
+      opacity: 0.7;
+    }
+
+    .process-label {
+      position: relative;
+      display: inline-flex;
+      width: fit-content;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--purple-pale);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+    }
+
+    .process-step:nth-child(4) .process-label {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+
+    .features-showcase {
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .feature-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 560px;
+      display: grid;
+      grid-template-rows: 250px 1fr;
+      border-radius: 28px;
+      background: #fff;
+      box-shadow: 0 28px 70px rgba(49, 58, 137, 0.14);
+    }
+
+    .feature-card:nth-child(2),
+    .feature-card:nth-child(3) {
+      background: #f8f8ff;
+    }
+
+    .feature-card:nth-child(4) {
+      background: #111735;
+      color: #fff;
+    }
+
+    .feature-art {
+      position: relative;
+      overflow: hidden;
+      background: #eef0ff;
+    }
+
+    .feature-art::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 44%;
+      background: linear-gradient(180deg, transparent, rgba(17, 24, 57, 0.12));
+      pointer-events: none;
+    }
+
+    .feature-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top left;
+    }
+
+    .feature-body {
+      position: relative;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .feature-kicker {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 16px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--purple-pale);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+    }
+
+    .feature-card:nth-child(4) .feature-kicker {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+
+    .feature-title {
+      display: grid;
+      grid-template-columns: 50px 1fr;
+      gap: 16px;
+      align-items: start;
+      color: currentColor;
+      min-width: 0;
+    }
+
+    .feature-title h3 {
+      color: currentColor;
+      font-size: clamp(22px, 2vw, 30px);
+      line-height: 1.35;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .feature-num {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--purple);
+      color: #fff;
+      font-weight: 950;
+      box-shadow: 0 14px 28px rgba(69, 85, 206, 0.22);
+    }
+
+    .feature-body p {
+      color: currentColor;
+      font-weight: 720;
+      line-height: 1.85;
+      opacity: 0.72;
+      overflow-wrap: anywhere;
+    }
+
+    .point {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(91, 91, 220, 0.08);
+    }
+
+    .feature-card:nth-child(4) .point {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .point strong {
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.1em;
+    }
+
+    .feature-card:nth-child(4) .point strong {
+      color: #fff;
+    }
+
+    .point span {
+      color: currentColor;
+      font-weight: 850;
+      line-height: 1.65;
+    }
+
+    .screen-slider {
+      --slide-index: 0;
+      position: relative;
+      width: 100%;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.65), transparent 26%),
+        linear-gradient(135deg, #ffffff 0%, #f7f8ff 48%, #eef0ff 100%);
+      box-shadow: 0 28px 70px rgba(49, 58, 137, 0.2);
+    }
+
+    .slide-viewport {
+      overflow: hidden;
+    }
+
+    .slide-track {
+      display: flex;
+      transform: translate3d(calc(var(--slide-index) * -100%), 0, 0);
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      min-width: 100%;
+      display: grid;
+      grid-template-columns: minmax(260px, 0.38fr) minmax(0, 0.62fr);
+      gap: 38px;
+      align-items: center;
+      padding: clamp(28px, 4vw, 54px);
+    }
+
+    .slide-copy {
+      position: relative;
+      z-index: 1;
+    }
+
+    .slide-copy span {
+      display: inline-flex;
+      margin-bottom: 22px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--purple);
+      font-size: 13px;
+      font-weight: 950;
+      box-shadow: 0 12px 28px rgba(69, 85, 206, 0.12);
+    }
+
+    .slide-copy h3 {
+      margin-bottom: 16px;
+      color: var(--purple-dark);
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .slide-copy p {
+      margin-bottom: 28px;
+      color: #4d5578;
+      font-size: 16px;
+      font-weight: 750;
+      line-height: 1.9;
+    }
+
+    .slide-count {
+      color: rgba(58, 66, 143, 0.22);
+      font-size: clamp(54px, 7vw, 92px);
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .slide-shot {
+      overflow: hidden;
+      border: 1px solid rgba(77, 89, 200, 0.16);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow:
+        0 30px 70px rgba(30, 37, 94, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .slide-shot img {
+      width: 100%;
+      height: clamp(330px, 34vw, 520px);
+      object-fit: cover;
+      object-position: left top;
+    }
+
+    .slide-controls {
+      position: relative;
+      z-index: 2;
+      margin: 0 clamp(22px, 4vw, 54px) clamp(22px, 4vw, 42px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .slide-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      width: min(760px, 100%);
+      gap: 10px;
+    }
+
+    .slide-tab,
+    .slide-arrow {
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .slide-tab {
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.72);
+      color: #59618b;
+      font-size: 13px;
+      font-weight: 950;
+      box-shadow: inset 0 0 0 1px rgba(78, 90, 200, 0.14);
+      transition: 0.2s ease;
+    }
+
+    .slide-tab.is-active {
+      background: var(--purple);
+      color: #fff;
+      box-shadow: 0 14px 26px rgba(69, 85, 206, 0.24);
+    }
+
+    .slide-arrows {
+      display: flex;
+      gap: 10px;
+    }
+
+    .slide-arrow {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #fff;
+      color: var(--purple);
+      font-size: 18px;
+      font-weight: 950;
+      box-shadow: inset 0 0 0 1px rgba(78, 90, 200, 0.14), 0 14px 26px rgba(54, 60, 138, 0.12);
+      transition: 0.2s ease;
+    }
+
+    .slide-arrow:hover,
+    .slide-tab:hover {
+      transform: translateY(-2px);
+    }
+
+    .comparison-board {
+      width: min(1060px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.14fr 0.93fr 0.93fr;
+      gap: 14px;
+      align-items: stretch;
+      padding: 14px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(244, 243, 255, 0.95), rgba(255, 255, 255, 0.78));
+      box-shadow: 0 30px 76px rgba(49, 58, 137, 0.16);
+    }
+
+    .comparison-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 460px;
+      padding: 28px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: inset 0 0 0 1px rgba(82, 92, 190, 0.12);
+    }
+
+    .comparison-card.featured {
+      background: linear-gradient(145deg, #30309f 0%, #5b5bdc 100%);
+      color: #fff;
+      box-shadow: 0 24px 54px rgba(69, 85, 206, 0.28);
+    }
+
+    .comparison-card::before {
+      content: "";
+      position: absolute;
+      right: -58px;
+      top: -62px;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: rgba(91, 91, 220, 0.09);
+    }
+
+    .comparison-card.featured::before {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .comparison-label {
+      position: relative;
+      display: inline-flex;
+      margin-bottom: 18px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--purple-pale);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+    }
+
+    .comparison-card.featured .comparison-label {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+
+    .comparison-card h3 {
+      position: relative;
+      margin-bottom: 24px;
+      color: currentColor;
+      font-size: clamp(24px, 2.2vw, 34px);
+      line-height: 1.25;
+    }
+
+    .comparison-list {
+      position: relative;
+      display: grid;
+      gap: 12px;
+    }
+
+    .comparison-item {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--navy);
+      box-shadow: inset 0 0 0 1px rgba(82, 92, 190, 0.09);
+    }
+
+    .comparison-card.featured .comparison-item {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    }
+
+    .comparison-mark {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(91, 91, 220, 0.11);
+      color: var(--purple);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .comparison-card.featured .comparison-mark {
+      background: #fff;
+      color: var(--purple);
+    }
+
+    .comparison-item strong {
+      display: block;
+      margin-bottom: 3px;
+      color: currentColor;
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .comparison-item span:last-child {
+      color: currentColor;
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.6;
+      opacity: 0.72;
+    }
+
+    .audience-board {
+      width: min(1060px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 12px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.48);
+      box-shadow: 0 28px 70px rgba(49, 58, 137, 0.16);
+      backdrop-filter: blur(14px);
+    }
+
+    .audience-card {
+      position: relative;
+      min-height: 310px;
+      overflow: hidden;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 22px;
+      background: #fff;
+      color: var(--navy);
+      box-shadow: inset 0 0 0 1px rgba(80, 92, 190, 0.1);
+    }
+
+    .audience-card::before {
+      content: "";
+      position: absolute;
+      inset: auto -44px -54px auto;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(91, 91, 220, 0.1);
+    }
+
+    .audience-card:nth-child(2) {
+      margin-top: 34px;
+    }
+
+    .audience-card:nth-child(3) {
+      background: linear-gradient(145deg, #30309f 0%, #5557dd 100%);
+      color: #fff;
+    }
+
+    .audience-card:nth-child(4) {
+      margin-top: 18px;
+      background: #101735;
+      color: #fff;
+    }
+
+    .audience-meta {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: currentColor;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      opacity: 0.72;
+    }
+
+    .audience-no {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(91, 91, 220, 0.1);
+      color: var(--purple);
+      letter-spacing: 0;
+    }
+
+    .audience-card:nth-child(3) .audience-no,
+    .audience-card:nth-child(4) .audience-no {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+
+    .audience-copy {
+      position: relative;
+    }
+
+    .audience-card h3 {
+      margin-bottom: 20px;
+      color: currentColor;
+      font-size: clamp(20px, 1.65vw, 25px);
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .audience-card h3 span,
+    .audience-card p span {
+      display: block;
+    }
+
+    .audience-card p {
+      margin-bottom: 0;
+      color: currentColor;
+      font-size: 14px;
+      font-weight: 760;
+      line-height: 1.8;
+      opacity: 0.78;
+      word-break: keep-all;
+    }
+
+    .pricing-table {
+      width: min(860px, 100%);
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .pricing-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      width: min(860px, 100%);
+      margin: 0 auto 16px;
+    }
+
+    .pricing-tab {
+      padding: 14px;
+      border-radius: 8px;
+      background: var(--purple);
+      color: #fff;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .single-plan {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 0;
+    }
+
+    .plan-main {
+      padding: 42px;
+      text-align: center;
+      border-right: 1px solid #d7daf4;
+    }
+
+    .plan-label {
+      display: inline-flex;
+      margin-bottom: 16px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: #fff4bf;
+      color: #7c4a03;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .price-big {
+      display: block;
+      margin: 8px 0 10px;
+      color: var(--red);
+      font-size: clamp(54px, 8vw, 86px);
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .price-big small {
+      font-size: 28px;
+    }
+
+    .normal-price {
+      color: var(--muted);
+      font-weight: 850;
+    }
+
+    .normal-price s {
+      color: var(--red);
+      text-decoration-thickness: 2px;
+    }
+
+    .plan-side {
+      padding: 42px;
+      background: #fbfbff;
+    }
+
+    .plan-side h3 {
+      color: var(--purple-dark);
+    }
+
+    .plan-list {
+      margin: 0 0 28px;
+      padding: 0;
+      list-style: none;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .plan-list li {
+      margin: 11px 0;
+    }
+
+    .plan-list li::before {
+      content: "✓";
+      margin-right: 8px;
+      color: var(--purple);
+      font-weight: 950;
+    }
+
+    .faq-list {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 10px;
+    }
+
+    .faq-item {
+      overflow: hidden;
+      border-radius: 8px;
+      background: #e9e8fb;
+    }
+
+    .faq-question {
+      width: 100%;
+      min-height: 54px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border: 0;
+      background: transparent;
+      color: var(--navy);
+      font: inherit;
+      font-weight: 850;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .faq-question span:first-child::before {
+      content: "Q";
+      display: inline-grid;
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--purple);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.24s ease;
+    }
+
+    .faq-answer p {
+      margin: 0;
+      padding: 0 18px 18px 52px;
+      color: var(--text);
+      font-weight: 650;
+    }
+
+    .faq-item.is-open .faq-question > span:last-child {
+      transform: rotate(180deg);
+    }
+
+    .download-box {
+      width: min(860px, 100%);
+      margin: 58px auto 0;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 30px;
+      padding: 34px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #696bec, #30309f);
+      color: #fff;
+    }
+
+    .download-box h3 {
+      font-size: 28px;
+    }
+
+    .download-preview {
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .download-preview img {
+      border-radius: 8px;
+    }
+
+    .download-form {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .download-form input,
+    .download-form select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid #d9def0;
+      border-radius: 4px;
+      padding: 0 10px;
+      font: inherit;
+    }
+
+    .download-form .btn {
+      min-height: 42px;
+      border-radius: 5px;
+      background: var(--purple);
+    }
+
+    .creator {
+      position: relative;
+      width: min(980px, 100%);
+      margin: 0 auto;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 44px;
+      align-items: center;
+      padding: clamp(28px, 4vw, 54px);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 8% 12%, rgba(91, 91, 220, 0.12), transparent 30%),
+        linear-gradient(135deg, #fff 0%, #f8f8ff 58%, #eef0ff 100%);
+      box-shadow: 0 30px 76px rgba(49, 58, 137, 0.17);
+    }
+
+    .creator::before {
+      content: "MADE BY FREELANCER";
+      position: absolute;
+      right: clamp(22px, 4vw, 54px);
+      top: 26px;
+      color: rgba(48, 48, 159, 0.1);
+      font-size: clamp(30px, 5vw, 72px);
+      font-weight: 950;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .creator-photo {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      aspect-ratio: 1;
+      border-radius: 30px;
+      background: #fff;
+      box-shadow: 0 24px 52px rgba(49, 58, 137, 0.18);
+    }
+
+    .creator-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(255, 255, 255, 0.74);
+      border-radius: inherit;
+    }
+
+    .creator-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .creator-copy {
+      position: relative;
+      z-index: 1;
+    }
+
+    .creator-label {
+      display: inline-flex;
+      margin-bottom: 18px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      box-shadow: 0 12px 28px rgba(69, 85, 206, 0.12);
+    }
+
+    .creator h2 {
+      margin-bottom: 18px;
+      font-size: clamp(34px, 4vw, 56px);
+      line-height: 1.1;
+      color: var(--navy);
+    }
+
+    .creator-text {
+      display: grid;
+      gap: 12px;
+      max-width: 610px;
+    }
+
+    .creator-text p {
+      margin: 0;
+      color: #334155;
+      font-size: 16px;
+      font-weight: 720;
+      line-height: 2;
+    }
+
+    .creator-sign {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--purple-dark);
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+    }
+
+    .creator-sign::before {
+      content: "";
+      width: 54px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.35;
+    }
+
+    .site-footer {
+      padding: 52px 0;
+      background: linear-gradient(135deg, #696bec, #2f318f);
+      color: #fff;
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr auto;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(2, max-content);
+      gap: 8px 30px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .nav {
+        display: flex;
+        margin-left: auto;
+      }
+
+      .nav a:not(.header-cta) {
+        display: none;
+      }
+
+      .hero-inner,
+      .target-box,
+      .download-box,
+      .creator,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .creator-photo {
+        width: min(260px, 100%);
+      }
+
+      .slide {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .slide-shot img {
+        height: clamp(260px, 55vw, 430px);
+      }
+
+      .phone-frame {
+        display: none;
+      }
+
+      .metric-grid,
+      .process-flow,
+      .features-showcase,
+      .audience-board {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .process-flow::before {
+        display: none;
+      }
+
+      .process-step:nth-child(even) {
+        margin-top: 0;
+      }
+
+      .audience-card:nth-child(2),
+      .audience-card:nth-child(4) {
+        margin-top: 0;
+      }
+
+      .comparison-board,
+      .single-plan {
+        grid-template-columns: 1fr;
+      }
+
+      .plan-main {
+        border-right: 0;
+        border-bottom: 1px solid #d7daf4;
+      }
+
+      .hero-inner > * {
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header-inner {
+        min-height: 64px;
+        gap: 12px;
+      }
+
+      .logo {
+        font-size: 15px;
+      }
+
+      .header-cta {
+        min-height: 40px;
+        padding: 0 13px;
+        font-size: 11px;
+      }
+
+      .section {
+        padding: 64px 0;
+      }
+
+      h1 {
+        font-size: clamp(25px, 7.5vw, 31px);
+      }
+
+      h2 {
+        font-size: clamp(25px, 8vw, 34px);
+      }
+
+      .hero-actions,
+      .metric-grid,
+      .process-flow,
+      .features-showcase,
+      .audience-board,
+      .pricing-tabs {
+        grid-template-columns: 1fr;
+      }
+
+      .process-flow {
+        padding: 8px;
+        border-radius: 22px;
+      }
+
+      .process-step {
+        min-height: 230px;
+        padding: 24px;
+      }
+
+      .feature-card {
+        min-height: auto;
+        grid-template-rows: 220px 1fr;
+      }
+
+      .feature-body {
+        padding: 24px;
+      }
+
+      .audience-board {
+        padding: 8px;
+        border-radius: 22px;
+      }
+
+      .audience-card {
+        min-height: 220px;
+        padding: 24px;
+      }
+
+      .comparison-board {
+        padding: 8px;
+        border-radius: 22px;
+      }
+
+      .comparison-card {
+        min-height: auto;
+        padding: 24px;
+      }
+
+      .creator {
+        gap: 26px;
+      }
+
+      .creator::before {
+        white-space: normal;
+        max-width: 300px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero-inner {
+        min-height: 0;
+        gap: 34px;
+        padding: 38px 0 42px;
+      }
+
+      .hero-copy,
+      .device-stage,
+      .pc-frame {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .hero-copy p {
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .keep-line {
+        white-space: nowrap;
+      }
+
+      .hero-price {
+        align-self: center;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .funnel-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        border-radius: 12px;
+      }
+
+      .funnel-step,
+      .funnel-step:first-child {
+        margin-left: 0;
+        clip-path: none;
+      }
+
+      .metric {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding: 24px 0;
+      }
+
+      .metric:last-child {
+        border-bottom: 0;
+      }
+
+      .feature-card,
+      .screen-slider,
+      .download-box {
+        padding: 22px;
+      }
+
+      .slide-controls {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .slide-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+      }
+
+      .slide-tab {
+        min-height: 44px;
+        padding: 0 10px;
+        font-size: 12px;
+      }
+
+      .slide-arrows {
+        justify-content: flex-end;
+      }
+
+      .slide-shot img {
+        height: clamp(230px, 68vw, 330px);
+      }
+
+      .point {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-links {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="#">
+        <span class="logo-mark"></span>
+        FreelaBoard
+      </a>
+      <nav class="nav">
+        <a href="#features">機能</a>
+        <a href="#how">仕組み</a>
+        <a href="#pricing">料金プラン</a>
+        <a href="#faq">よくある質問</a>
+        <a href="#creator">制作者について</a>
+        <a class="header-cta" href="app/register.html">14日間無料で試す</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1>
+            <span class="keep-line">フリーランスの仕事を、</span>
+            <span class="keep-line">ひとつの画面に。</span>
+          </h1>
+          <p>
+            案件、請求書、売上、クライアント管理。<br>
+            増えてきた仕事の情報をFreelaBoardにまとめて、
+            管理に追われる時間を減らします。
+          </p>
+          <div class="hero-actions">
+            <a class="btn" href="app/register.html">14日間無料で試す →</a>
+            <div class="hero-price">
+              先着<br><strong>300</strong>名限定
+            </div>
+          </div>
+        </div>
+        <div class="device-stage">
+          <div class="pc-frame">
+            <img src="assets/dashboard.png" alt="FreelaBoard ダッシュボード" />
+          </div>
+          <div class="phone-frame">
+            <img src="assets/projects.png" alt="FreelaBoard スマホ表示イメージ" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="target-card">
+      <div class="container">
+        <div class="target-box">
+          <div class="phone-illust"></div>
+          <p>案件が増えてきたあなた<br>「仕事の管理、そろそろ整えたい」<br>と思っていませんか？</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="video-box video-play">
+          <img src="assets/dashboard.png" alt="FreelaBoard 紹介動画イメージ" />
+        </div>
+        <div class="section-head">
+          <span class="eyebrow">案件・請求・売上・クライアントをまとめる</span>
+          <h2>FreelaBoardによって<br><span class="accent">「管理に追われる時間」を減らせる</span></h2>
+          <p>バラバラに散らばった情報をひとつにまとめ、今やるべきことと売上状況をすぐ確認できます。</p>
+        </div>
+        <div class="funnel">
+          <div class="funnel-row">
+            <div class="funnel-step">案件登録</div>
+            <div class="funnel-step">請求管理</div>
+            <div class="funnel-step">売上確認</div>
+            <div class="funnel-step">本業に集中</div>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <span>管理時間</span>
+            <strong>削減</strong>
+            <p>確認する場所を減らし、管理にかかる時間を抑えます。</p>
+          </div>
+          <div class="metric">
+            <span>請求漏れ</span>
+            <strong>防止</strong>
+            <p>案件と請求書を紐づけ、入金待ちまで確認できます。</p>
+          </div>
+          <div class="metric">
+            <span>売上</span>
+            <strong>可視化</strong>
+            <p>月別・クライアント別の売上をすぐ把握できます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-purple" id="how">
+      <div class="container">
+        <div class="section-head">
+          <h2>FreelaBoardの仕組み</h2>
+        </div>
+        <div class="process-flow">
+          <article class="process-step">
+            <span class="process-num">1</span>
+            <div class="process-copy">
+              <span class="process-label">INPUT</span>
+              <h3>案件を登録</h3>
+              <p>案件名・クライアント・金額・締切を登録</p>
+            </div>
+          </article>
+          <article class="process-step">
+            <span class="process-num">2</span>
+            <div class="process-copy">
+              <span class="process-label">INVOICE</span>
+              <h3>請求書を発行</h3>
+              <p>案件情報から請求書を作成</p>
+            </div>
+          </article>
+          <article class="process-step">
+            <span class="process-num">3</span>
+            <div class="process-copy">
+              <span class="process-label">REPORT</span>
+              <h3>売上を自動で集計</h3>
+              <p>月別・クライアント別に売上を可視化</p>
+            </div>
+          </article>
+          <article class="process-step">
+            <span class="process-num">4</span>
+            <div class="process-copy">
+              <span class="process-label">CALENDAR</span>
+              <h3>締切をカレンダーで確認</h3>
+              <p>次にやるべき案件がすぐ分かる</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reasons">
+      <div class="container">
+        <div class="section-head">
+          <h2>FreelaBoardで<br>仕事が整う4つの理由</h2>
+        </div>
+        <div class="features-showcase">
+          <article class="feature-card">
+            <div class="feature-art">
+              <img src="assets/projects.png" alt="案件管理画面" />
+            </div>
+            <div class="feature-body">
+              <div>
+                <span class="feature-kicker">案件管理画面</span>
+                <div class="feature-title">
+                  <span class="feature-num">1</span>
+                  <h3>案件の進捗と締切を一目で把握できる</h3>
+                </div>
+                <p>進行中、入金待ち、完了までを一覧で確認。締切や金額も案件ごとにまとまります。</p>
+              </div>
+              <div class="point"><strong>POINT</strong><span>締切忘れを防ぎ、次にやるべき案件を見失いません。</span></div>
+            </div>
+          </article>
+          <article class="feature-card">
+            <div class="feature-art">
+              <img src="assets/invoice.png" alt="請求書管理画面" />
+            </div>
+            <div class="feature-body">
+              <div>
+                <span class="feature-kicker">請求書管理画面</span>
+                <div class="feature-title">
+                  <span class="feature-num">2</span>
+                  <h3>請求書と入金状況を案件ごとに管理できる</h3>
+                </div>
+                <p>案件と請求書を紐づけて管理。発行後の確認や入金チェックまで迷いません。</p>
+              </div>
+              <div class="point"><strong>POINT</strong><span>請求漏れや入金確認の抜け漏れを減らせます。</span></div>
+            </div>
+          </article>
+          <article class="feature-card">
+            <div class="feature-art">
+              <img src="assets/reports.png" alt="売上分析画面" />
+            </div>
+            <div class="feature-body">
+              <div>
+                <span class="feature-kicker">売上分析画面</span>
+                <div class="feature-title">
+                  <span class="feature-num">3</span>
+                  <h3>今月いくら稼いだかをすぐ見える化できる</h3>
+                </div>
+                <p>月別・クライアント別の売上を可視化。伸びている仕事と偏りが見えてきます。</p>
+              </div>
+              <div class="point"><strong>POINT</strong><span>数字で成長を確認し、次の提案や営業につなげられます。</span></div>
+            </div>
+          </article>
+          <article class="feature-card">
+            <div class="feature-art">
+              <img src="assets/clients.png" alt="クライアント管理画面" />
+            </div>
+            <div class="feature-body">
+              <div>
+                <span class="feature-kicker">クライアント管理画面</span>
+                <div class="feature-title">
+                  <span class="feature-num">4</span>
+                  <h3>クライアントごとの売上や履歴をすぐ確認できる</h3>
+                </div>
+                <p>過去案件、請求、入金状況を確認するたびに、別々のツールを開く必要がありません。</p>
+              </div>
+              <div class="point"><strong>POINT</strong><span>整った管理で、クライアント対応もスムーズになります。</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-purple" id="features">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">FreelaBoardの特徴</span>
+          <h2>管理画面からリアルタイムで<br>仕事の状況を確認</h2>
+        </div>
+        <div class="screen-slider" data-slider>
+          <div class="slide-viewport">
+            <div class="slide-track">
+              <article class="slide">
+                <div class="slide-copy">
+                  <span>Dashboard</span>
+                  <h3>重要な情報を一目で把握</h3>
+                  <p>売上、進行中の案件、入金待ち、完了案件をまとめて確認できます。</p>
+                  <div class="slide-count">01</div>
+                </div>
+                <div class="slide-shot">
+                  <img src="assets/dashboard.png" alt="ダッシュボード画面" />
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-copy">
+                  <span>Report</span>
+                  <h3>売上や案件の推移をグラフで確認</h3>
+                  <p>月別・クライアント別の売上を見える化して、次の動きにつなげられます。</p>
+                  <div class="slide-count">02</div>
+                </div>
+                <div class="slide-shot">
+                  <img src="assets/reports.png" alt="レポート画面" />
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-copy">
+                  <span>Clients</span>
+                  <h3>クライアントごとの売上・入金を管理</h3>
+                  <p>過去案件、請求、入金状況をクライアントごとに確認できます。</p>
+                  <div class="slide-count">03</div>
+                </div>
+                <div class="slide-shot">
+                  <img src="assets/clients.png" alt="クライアント管理画面" />
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-copy">
+                  <span>Projects</span>
+                  <h3>すべての案件を一覧で管理</h3>
+                  <p>進捗・締切・金額・ステータスをまとめて把握できます。</p>
+                  <div class="slide-count">04</div>
+                </div>
+                <div class="slide-shot">
+                  <img src="assets/projects.png" alt="案件一覧画面" />
+                </div>
+              </article>
+            </div>
+          </div>
+          <div class="slide-controls">
+            <div class="slide-tabs" aria-label="画面切り替え">
+              <button class="slide-tab is-active" type="button" data-slide="0">ダッシュボード</button>
+              <button class="slide-tab" type="button" data-slide="1">レポート</button>
+              <button class="slide-tab" type="button" data-slide="2">クライアント管理</button>
+              <button class="slide-tab" type="button" data-slide="3">案件一覧</button>
+            </div>
+            <div class="slide-arrows">
+              <button class="slide-arrow" type="button" data-prev aria-label="前の画面">←</button>
+              <button class="slide-arrow" type="button" data-next aria-label="次の画面">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="comparison">
+      <div class="container">
+        <div class="section-head">
+          <h2>だから、FreelaBoardが選ばれています</h2>
+        </div>
+        <div class="comparison-board">
+          <article class="comparison-card featured">
+            <span class="comparison-label">FreelaBoard</span>
+            <h3>案件・請求・売上を<br>ひとつの流れで管理</h3>
+            <div class="comparison-list">
+              <div class="comparison-item">
+                <span class="comparison-mark">◎</span>
+                <span><strong>案件管理</strong><span>案件・締切・金額を一元管理</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">◎</span>
+                <span><strong>請求書との紐づけ</strong><span>案件ごとに管理</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">◎</span>
+                <span><strong>売上の見える化</strong><span>月別・クライアント別</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">◎</span>
+                <span><strong>スマホ確認</strong><span>外出先でも確認</span></span>
+              </div>
+            </div>
+          </article>
+          <article class="comparison-card">
+            <span class="comparison-label">スプレッドシート</span>
+            <h3>自由だけど、<br>管理が増えやすい</h3>
+            <div class="comparison-list">
+              <div class="comparison-item">
+                <span class="comparison-mark">△</span>
+                <span><strong>案件管理</strong><span>手入力が多い</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">△</span>
+                <span><strong>請求書との紐づけ</strong><span>ファイルが散らばる</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">△</span>
+                <span><strong>売上の見える化</strong><span>集計が必要</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">△</span>
+                <span><strong>スマホ確認</strong><span>見づらい</span></span>
+              </div>
+            </div>
+          </article>
+          <article class="comparison-card">
+            <span class="comparison-label">一般的な請求ツール</span>
+            <h3>請求はできても、<br>案件全体は追いづらい</h3>
+            <div class="comparison-list">
+              <div class="comparison-item">
+                <span class="comparison-mark">△</span>
+                <span><strong>案件管理</strong><span>請求中心</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">○</span>
+                <span><strong>請求書との紐づけ</strong><span>請求書は管理可能</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">△</span>
+                <span><strong>売上の見える化</strong><span>案件履歴は弱い</span></span>
+              </div>
+              <div class="comparison-item">
+                <span class="comparison-mark">○</span>
+                <span><strong>スマホ確認</strong><span>確認可能</span></span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-purple">
+      <div class="container">
+        <div class="section-head">
+          <h2>こんなフリーランスにおすすめ</h2>
+        </div>
+        <div class="audience-board">
+          <article class="audience-card">
+            <div class="audience-meta">
+              <span>WEB PRODUCTION</span>
+              <span class="audience-no">01</span>
+            </div>
+            <div class="audience-copy">
+              <h3><span>Web制作の</span><span>あなた</span></h3>
+              <p><span>「案件の進捗と締切」を</span><span>一目で把握したくないですか？</span></p>
+            </div>
+          </article>
+          <article class="audience-card">
+            <div class="audience-meta">
+              <span>DESIGNER</span>
+              <span class="audience-no">02</span>
+            </div>
+            <div class="audience-copy">
+              <h3><span>デザイナーの</span><span>あなた</span></h3>
+              <p><span>「請求書と入金状況」を</span><span>案件ごとに管理したくないですか？</span></p>
+            </div>
+          </article>
+          <article class="audience-card">
+            <div class="audience-meta">
+              <span>ENGINEER</span>
+              <span class="audience-no">03</span>
+            </div>
+            <div class="audience-copy">
+              <h3><span>コーダー / エンジニアの</span><span>あなた</span></h3>
+              <p><span>「クライアントごとの売上や履歴」を</span><span>すぐ確認したくないですか？</span></p>
+            </div>
+          </article>
+          <article class="audience-card">
+            <div class="audience-meta">
+              <span>CREATOR</span>
+              <span class="audience-no">04</span>
+            </div>
+            <div class="audience-copy">
+              <h3><span>ライター / 動画編集者の</span><span>あなた</span></h3>
+              <p><span>「今月いくら稼いだか」を</span><span>すぐ見える化したくないですか？</span></p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-purple" id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <h2>料金プラン</h2>
+        </div>
+        <div class="pricing-tabs">
+          <div class="pricing-tab">14日間 無料トライアル</div>
+          <div class="pricing-tab">先着300名限定</div>
+          <div class="pricing-tab">1プランですべて使える</div>
+        </div>
+        <div class="pricing-table">
+          <div class="single-plan">
+            <div class="plan-main">
+              <span class="plan-label">先着300名限定 / 約34%OFF</span>
+              <h3>FreelaBoard ソロプラン</h3>
+              <span class="price-big">¥980<small>/月</small></span>
+              <p class="normal-price">通常価格 <s>¥1,480/月</s></p>
+              <a class="btn btn-blue" href="app/register.html">今すぐ無料で試す →</a>
+            </div>
+            <div class="plan-side">
+              <h3>プランに含まれるもの</h3>
+              <ul class="plan-list">
+                <li>案件管理</li>
+                <li>請求書管理</li>
+                <li>売上レポート</li>
+                <li>クライアント管理</li>
+                <li>カレンダー確認</li>
+                <li>スマホ・タブレット・PC対応</li>
+              </ul>
+              <p>クレジットカード登録が必要です。解約はいつでも可能です。</p>
+              <p>解約後の再登録は通常価格になります。300名に達し次第、通常価格に戻ります。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="accent">よくある質問</h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item is-open">
+            <button class="faq-question" type="button" aria-expanded="true">
+              <span>無料トライアル後は自動で課金されますか？</span>
+              <span>⌄</span>
+            </button>
+            <div class="faq-answer" style="max-height: 120px;">
+              <p>A. はい。14日後に自動で有料プランへ移行されます。解約はいつでもマイページから可能です。</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>先着300名の価格はいつまで続きますか？</span>
+              <span>⌄</span>
+            </button>
+            <div class="faq-answer">
+              <p>A. 継続している限り永久に¥980/月です。ただし解約後の再登録は通常価格になります。</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>データはどこに保存されますか？</span>
+              <span>⌄</span>
+            </button>
+            <div class="faq-answer">
+              <p>A. Firebaseを利用して安全に保存されます。</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>スマホでも使えますか？</span>
+              <span>⌄</span>
+            </button>
+            <div class="faq-answer">
+              <p>A. はい。スマホ・タブレット・PCすべてに対応しています。</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>チームでの利用はできますか？</span>
+              <span>⌄</span>
+            </button>
+            <div class="faq-answer">
+              <p>A. 現在はソロプランのみです。チームプランは近日公開予定です。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="download-box">
+          <div>
+            <h3>まず14日間、無料で使ってみてください。</h3>
+            <div class="download-preview">
+              <img src="assets/dashboard.png" alt="FreelaBoard資料イメージ" />
+            </div>
+            <p>案件・請求・売上・クライアント管理をひとつにまとめて、本業に集中できる環境を整えましょう。</p>
+          </div>
+          <form class="download-form">
+            <input type="text" placeholder="お名前" />
+            <input type="email" placeholder="メールアドレス" />
+            <input type="text" placeholder="屋号・会社名" />
+            <select>
+              <option>職種を選択してください</option>
+              <option>Web制作</option>
+              <option>デザイナー</option>
+              <option>エンジニア</option>
+              <option>ライター / 動画編集者</option>
+            </select>
+            <a class="btn" href="app/register.html">送信して無料で始める</a>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-purple" id="creator">
+      <div class="container">
+        <article class="creator">
+          <div class="creator-photo">
+            <img src="assets/creator.png" alt="制作者 凪 燈のアイコン" />
+          </div>
+          <div class="creator-copy">
+            <span class="creator-label">CREATOR STORY</span>
+            <h2>凪 燈 / NAGI AKARI</h2>
+            <div class="creator-text">
+              <p>フリーランスWebデザイナーとして、自分が使うためにFreelaBoardを作りました。</p>
+              <p>案件が増えてきたとき、管理ツールはいくつもあるのに、ひとりで働く自分にちょうどいいものがありませんでした。</p>
+              <p>だから、案件・請求・売上を無理なく見渡せる形にしています。</p>
+            </div>
+            <div class="creator-sign">NAGI AKARI</div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a class="logo" href="#">
+        <span class="logo-mark"></span>
+        FreelaBoard
+      </a>
+      <div class="footer-links">
+        <a href="#">プライバシーポリシー</a>
+        <a href="#">利用規約</a>
+        <a href="#">特定商取引法に基づく表記</a>
+        <a href="#">お問い合わせ</a>
+        <span>© 2026 FreelaBoard</span>
+      </div>
+      <a class="header-cta" href="app/register.html">14日間無料で試す</a>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll(".faq-item").forEach((item) => {
+      const button = item.querySelector(".faq-question");
+      const answer = item.querySelector(".faq-answer");
+
+      button.addEventListener("click", () => {
+        const isOpen = item.classList.contains("is-open");
+        item.classList.toggle("is-open", !isOpen);
+        button.setAttribute("aria-expanded", String(!isOpen));
+        answer.style.maxHeight = isOpen ? null : `${answer.scrollHeight}px`;
+      });
+    });
+
+    document.querySelectorAll("[data-slider]").forEach((slider) => {
+      const tabs = Array.from(slider.querySelectorAll(".slide-tab"));
+      const prev = slider.querySelector("[data-prev]");
+      const next = slider.querySelector("[data-next]");
+      const slides = Array.from(slider.querySelectorAll(".slide"));
+      let current = 0;
+      let timerId;
+
+      const showSlide = (index) => {
+        current = (index + tabs.length) % tabs.length;
+        slider.style.setProperty("--slide-index", current);
+        tabs.forEach((tab, tabIndex) => {
+          tab.classList.toggle("is-active", tabIndex === current);
+          tab.setAttribute("aria-selected", String(tabIndex === current));
+        });
+        slides.forEach((slide, slideIndex) => {
+          slide.setAttribute("aria-hidden", String(slideIndex !== current));
+        });
+      };
+
+      const startAutoPlay = () => {
+        timerId = window.setInterval(() => showSlide(current + 1), 4500);
+      };
+
+      const resetAutoPlay = () => {
+        window.clearInterval(timerId);
+        startAutoPlay();
+      };
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          showSlide(Number(tab.dataset.slide));
+          resetAutoPlay();
+        });
+      });
+
+      prev.addEventListener("click", () => {
+        showSlide(current - 1);
+        resetAutoPlay();
+      });
+      next.addEventListener("click", () => {
+        showSlide(current + 1);
+        resetAutoPlay();
+      });
+      slider.addEventListener("mouseenter", () => window.clearInterval(timerId));
+      slider.addEventListener("mouseleave", startAutoPlay);
+
+      showSlide(0);
+      startAutoPlay();
+    });
+  </script>
+</body>
+</html>
